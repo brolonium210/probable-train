@@ -101,7 +101,7 @@ public class Assignment4_Interface {
 
                 // run the algorithms.
                 HuffmanCoding huffman = new HuffmanCoding(text);
-                String encoded = huffman.encode(text);
+                String encoded = huffman.encodeHelper(text);
                 String decoded = huffman.decode(encoded);
 
                 if (!encoded.matches("[01]*"))
