@@ -12,6 +12,7 @@ public class HuffmanCoding {
 	 */
 	private HuffmanNode root;
 	private HashMap<Character, Integer> frequencyMap = new HashMap<>();
+	private HashMap<Character, String> huffmanCodeSheet = new HashMap<>();
 
 	//I utilised this website to help
 	//https://www.geeksforgeeks.org/huffman-coding-greedy-algo-3/
@@ -19,21 +20,27 @@ public class HuffmanCoding {
 // Class representing a node in the Huffman Tree
 
 	private static class HuffmanNode implements Comparable<HuffmanNode> {
-		// Character data
 		char data;
-		// Frequency of the character
 		int frequency;
-		// Left and right child nodes
 		HuffmanNode left, right;
-		// Constructor to initialize the node
 		HuffmanNode(char data, int frequency) {
 			this.data = data;
 			this.frequency = frequency;
 			left = right = null;
 		}
+
 		@Override
 		public int compareTo(HuffmanNode other) {
-			return Integer.compare(this.frequency, other.frequency);
+			if (this.frequency < other.frequency) {
+				return -1;
+			}
+			if (this.frequency > other.frequency) {
+				return 1;
+			}
+			if (this.frequency == other.frequency) {
+				return Character.compare(this.data, other.data);
+			}
+			return 0;
 		}
 	}
 
@@ -42,7 +49,9 @@ public class HuffmanCoding {
 			frequencyMap.put(c, frequencyMap.getOrDefault(c, 0) + 1);
 		}
 		// Create a priority queue to build the Huffman Tree
-		PriorityQueue<HuffmanNode> priorityQueue =new PriorityQueue<>();
+		PriorityQueue<HuffmanNode> priorityQueue = new PriorityQueue<>();
+
+
 		// Create a Huffman node for each character and add it to the priority queue
 		for (char c : frequencyMap.keySet()) {
 			priorityQueue.add(new HuffmanNode(c, frequencyMap.get(c)));
@@ -63,36 +72,48 @@ public class HuffmanCoding {
 
 		// The remaining node is the root of the Huffman Tree
 		this.root = priorityQueue.poll();
+		//test section
+		StringBuilder code = new StringBuilder();
+		printCodes(root,code);
 	}
 	/**
 	 * Take an input string, text, and encode it with the stored tree. Should
 	 * return the encoded text as a binary string, that is, a string containing
 	 * only 1 and 0.
 	 */
-	public String encodeHelper(String text) {
-		return encodeHelper(root,text);
+	public String encode(String text){
+		StringBuilder myString = new StringBuilder();
+		for(char c:text.toCharArray()){
+			System.out.println(c);
+			myString.append(huffmanCodeSheet.get(c));
+
+		}
+
+
+		return String.valueOf(myString);
 	}
-	public String encodeHelper(HuffmanNode root,String text){
-		String code = new String();
-		if (root == null) return "";
+
+	// Method to print the Huffman codes
+	public void printCodes(HuffmanNode root, StringBuilder code) {
+		if (root == null) return;
 
 		// If this is a leaf node, print the character and its code
-//		if (root.data != '$') {
-//			System.out.println(root.data + ": " + code);
-//		}
+		if (root.data != '$') {
+			System.out.println(root.data + ": " + code);
+			huffmanCodeSheet.put(root.data, String.valueOf(code));
+		}
 
 		// Traverse the left subtree
 		if (root.left != null) {
-			this.encodeHelper(root.left, code+"0");
-//			code.deleteCharAt(code.length() - 1);
+			printCodes(root.left, code.append('0'));
+			code.deleteCharAt(code.length() - 1);
 		}
 
 		// Traverse the right subtree
 		if (root.right != null) {
-			this.encodeHelper(root.right, code+"1");
-//			code.deleteCharAt(code.length() - 1);
+			printCodes(root.right, code.append('1'));
+			code.deleteCharAt(code.length() - 1);
 		}
-		return code;
 	}
 
 
@@ -101,8 +122,22 @@ public class HuffmanCoding {
 	 * and return the decoded text as a text string.
 	 */
 	public String decode(String encoded) {
-		// TODO fill this in.
-		return "";
+		if (root == null) return "";
+		StringBuilder code = new StringBuilder();
+		HuffmanNode myNode = root;
+
+		for(char c:encoded.toCharArray()){
+			if(c == '0'){
+				myNode = myNode.left;
+			}else{
+				myNode = myNode.right;
+				}
+			if(myNode.left == null || myNode.right == null){
+				code.append(myNode.data);
+				myNode = root;
+			}
+		}
+		return String.valueOf(code);
 	}
 
 	/**

@@ -10,7 +10,7 @@ public class HuffmanTest_Handout {
         HuffmanCoding huffman = new HuffmanCoding(text);
         
         // Encode the text
-        String encodedText = huffman.encodeHelper(text);
+        String encodedText = huffman.encode(text);
         System.out.println("Encoded Text: " + encodedText);
         System.out.println("Expected Encoded Text: " + expectedEncodedText);
         
