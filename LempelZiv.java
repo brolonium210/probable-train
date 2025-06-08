@@ -7,10 +7,10 @@ public class LempelZiv {
      * text string.
      */
 
-    record OLC(int offset,int lengthOfMatch,String c){}
+    record Tuple(int offset,int length,String c){}
 
-    static boolean findCharHelper(List<OLC> myList,String myStr){
-        for(OLC tup:myList){
+    static boolean findCharHelper(List<Tuple> myList,String myStr){
+        for(Tuple tup:myList){
             if(tup.c.equals(myStr) ){
                 return true;
             }
@@ -31,33 +31,26 @@ public class LempelZiv {
 
     public static String compress(String input) {
         // TODO fill this in.
-        List<OLC> myDict = new ArrayList<>();
-        List<OLC> outDict = new ArrayList<>();
-        //will need to figure out window
-        int count = 0;
-        while(count<3) {
+        StringBuilder output= new StringBuilder();
+        int cursor = 0;
+        int windowSize = 100;
+        while(cursor < input.length()){
+            int length = 0;
+            int prevMatch = 0;
+            String myPattern = input.substring(cursor,cursor+length);
+            String myWindow = input.substring(cursor-length,cursor);
+            int match = myWindow.indexOf(myPattern);
+            if(match > -1){
+                prevMatch = match;
+                length++;
+            }else{
 
-
-
-        for (int i = 0; i < input.length() - count && i >= 0; i++) {
-            String temp = input.substring(i, i+count);
-            if (!findCharHelper(myDict, temp)) {
-                myDict.add(new OLC(0, temp.length()-1, temp));
             }
-        }
-            count++;
-        }
 
-        count=0;
-        while(count<3) {
-            for (int i = 0; i < input.length(); i++) {
-                String temp = input.substring(i - count, i);
-                if(findCharHelper(myDict,temp)){
 
-                }
-            }
+
+
         }
-
 
         return "";
     }
