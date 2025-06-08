@@ -7,7 +7,13 @@ public class LempelZiv {
      * text string.
      */
 
-    record Tuple(int offset,int length,String c){}
+    record Tuple(int offset,int length,String c){
+        @Override
+        public String toString(){
+            return "[ "+offset+" "+length+" "+c+" ]";
+        }
+
+    }
 
     static boolean findCharHelper(List<Tuple> myList,String myStr){
         for(Tuple tup:myList){
@@ -32,27 +38,43 @@ public class LempelZiv {
     public static String compress(String input) {
         // TODO fill this in.
         StringBuilder output= new StringBuilder();
+        List<Tuple> myDict = new ArrayList<>();
         int cursor = 0;
         int windowSize = 100;
         while(cursor < input.length()){
             int length = 0;
-            int prevMatch = 0;
-            String myPattern = input.substring(cursor,cursor+length);
-            String myWindow = input.substring(cursor-length,cursor);
-            int match = myWindow.indexOf(myPattern);
-            if(match > -1){
-                prevMatch = match;
-                length++;
-            }else{
+            int prevMatch = -1;
+            String myWindow;
+            while(true) {
+                String myPattern = input.substring(cursor, Math.min(cursor + length, input.length()));
+                if (length == 0) {
+                    length++;
+                    continue;
+                }
+//                String myPattern = input.substring(cursor, cursor + length);
 
+                int windowStart = Math.max(0, cursor - windowSize);
+                myWindow = input.substring(windowStart, cursor);
+
+                int match = myWindow.indexOf(myPattern);
+                if (match > -1) {
+                    prevMatch = match;
+                    length++;
+                } else {
+                    int offset = (prevMatch > -1) ? (cursor - (windowStart + prevMatch)) : 0;
+//                    offset = cursor - (windowStart + prevMatch);
+                    Tuple temp = new Tuple(offset, length - 1, input.substring(cursor + length - 1, cursor + length));
+                    myDict.add(temp);
+                    output.append(temp);
+                    cursor += length;
+                    break;
+                }
             }
-
-
-
 
         }
 
-        return "";
+
+        return String.valueOf(output);
     }
 
     /**
