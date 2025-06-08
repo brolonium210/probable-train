@@ -48,11 +48,11 @@ public class HuffmanCoding {
 		for (char c : text.toCharArray()) {
 			frequencyMap.put(c, frequencyMap.getOrDefault(c, 0) + 1);
 		}
-		// Create a priority queue to build the Huffman Tree
+		// Create a priority queue
 		PriorityQueue<HuffmanNode> priorityQueue = new PriorityQueue<>();
 
 
-		// Create a Huffman node for each character and add it to the priority queue
+		// Create a Huffman node
 		for (char c : frequencyMap.keySet()) {
 			priorityQueue.add(new HuffmanNode(c, frequencyMap.get(c)));
 		}
@@ -61,8 +61,7 @@ public class HuffmanCoding {
 			// Remove the two nodes with the lowest frequency
 			HuffmanNode left = priorityQueue.poll();
 			HuffmanNode right = priorityQueue.poll();
-			// Create a new internal node with these two nodes
-			// as children and add it back to the queue
+			// Create a new internal node and add it back to the queue
 			HuffmanNode newNode =
 					new HuffmanNode('$', left.frequency + right.frequency);
 			newNode.left = left;
@@ -93,23 +92,20 @@ public class HuffmanCoding {
 		return String.valueOf(myString);
 	}
 
-	// Method to print the Huffman codes
+	//from Geeks for Geeks ,slightly modified
 	public void printCodes(HuffmanNode root, StringBuilder code) {
 		if (root == null) return;
 
-		// If this is a leaf node, print the character and its code
 		if (root.data != '$') {
 			System.out.println(root.data + ": " + code);
 			huffmanCodeSheet.put(root.data, String.valueOf(code));
 		}
 
-		// Traverse the left subtree
 		if (root.left != null) {
 			printCodes(root.left, code.append('0'));
 			code.deleteCharAt(code.length() - 1);
 		}
 
-		// Traverse the right subtree
 		if (root.right != null) {
 			printCodes(root.right, code.append('1'));
 			code.deleteCharAt(code.length() - 1);

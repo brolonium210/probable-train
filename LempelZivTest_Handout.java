@@ -5,8 +5,7 @@ public class LempelZivTest_Handout {
         
         // Compress the texts
         String compressedText1 = LempelZiv.compress(text1);
-        
-        
+
         // Print results
         System.out.println("Text 1: " + text1);
         System.out.println("Tuples of Compressed Text 1: " + compressedText1);
