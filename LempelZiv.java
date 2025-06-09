@@ -1,11 +1,15 @@
 
 import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class LempelZiv {
     /**
      * Take uncompressed input as a text string, compress it, and return it as a
      * text string.
      */
+
+    public static List<Tuple> myDict = new ArrayList<>();
 
     record Tuple(int offset,int length,String c){
         @Override
@@ -38,9 +42,8 @@ public class LempelZiv {
     public static String compress(String input) {
         // TODO fill this in.
         StringBuilder output= new StringBuilder();
-        List<Tuple> myDict = new ArrayList<>();
         int cursor = 0;
-        int windowSize = 100;
+        int windowSize = 8;
         while(cursor < input.length()){
             int length = 0;
             int prevMatch = -1;
@@ -81,9 +84,44 @@ public class LempelZiv {
      * Take compressed input as a text string, decompress it, and return it as a
      * text string.
      */
+
+    public static List<Tuple> decompressHelp(String compressed){
+        List<Tuple> myDict = new ArrayList<>();
+        Pattern pattern = Pattern.compile("\\[\\s*(\\d+)\\s+(\\d+)\\s+(.*?)\\s*\\]");
+        Matcher matcher = pattern.matcher(compressed);
+        while(matcher.find()) {
+        String offset = matcher.group(1);
+        String length = matcher.group(2);
+        String c = matcher.group(3);
+        int IOffset = Integer.parseInt(offset);
+        int Ilength = Integer.parseInt(length);
+        Tuple temp = new Tuple(IOffset,Ilength,c);
+        myDict.add(temp);
+}
+        return myDict;
+    }
+
     public static String decompress(String compressed) {
         // TODO fill this in.
-        return "";
+//        System.out.println("this :: "+compressed);
+        List<Tuple> myDict = decompressHelp(compressed);
+        StringBuilder output= new StringBuilder();
+        int cursor = 0;
+        for(Tuple t:myDict){
+            if(t.offset == 0 && t.length == 0){
+                output.append(t.c);
+            }else{
+//                String temp = ;
+//                temp.(t.c);
+                output.append(output.substring(cursor-t.offset,(cursor-t.offset)+t.length));
+                output.append(t.c);
+                cursor+=t.length;
+            }
+            cursor++;
+        }
+
+
+        return String.valueOf(output);
     }
 
     /**
