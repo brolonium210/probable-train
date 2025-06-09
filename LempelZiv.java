@@ -14,7 +14,7 @@ public class LempelZiv {
     record Tuple(int offset,int length,String c){
         @Override
         public String toString(){
-            return "[ "+offset+" "+length+" "+c+" ]";
+            return "["+offset+"|"+length+"|"+c+"]";
         }
 
     }
@@ -87,7 +87,16 @@ public class LempelZiv {
 
     public static List<Tuple> decompressHelp(String compressed){
         List<Tuple> myDict = new ArrayList<>();
-        Pattern pattern = Pattern.compile("\\[\\s*(\\d+)\\s+(\\d+)\\s+(.*?)\\s*\\]");
+
+//          \[ — square bracket
+//          (\d+) — offset
+//          \| — pipe
+//          (\d+) —  length
+//          \| — pipe
+//          (.*?) — next char
+//          \] — square bracket
+
+        Pattern pattern = Pattern.compile("\\[(\\d+)\\|(\\d+)\\|(.*?)\\]");
         Matcher matcher = pattern.matcher(compressed);
         while(matcher.find()) {
         String offset = matcher.group(1);
@@ -114,13 +123,13 @@ public class LempelZiv {
 //                String temp = ;
 //                temp.(t.c);
                 output.append(output.substring(cursor-t.offset,(cursor-t.offset)+t.length));
-                output.append(t.c);
+                if(t.c != null){
+                    output.append(t.c);
+                }
                 cursor+=t.length;
             }
             cursor++;
         }
-
-
         return String.valueOf(output);
     }
 
